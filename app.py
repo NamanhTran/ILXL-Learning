@@ -3,7 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-connection = sqlite3.connect('test.db', check_same_thread=False)
+connection = sqlite3.connect('githubNames.db', check_same_thread=False)
 db = connection.cursor()
 db.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER NOT NULL, name TEXT NOT NULL, github TEXT NOT NULL)")
 
@@ -27,7 +27,13 @@ def form():
 
 @app.route('/repos')
 def list_names():
-    return render_template("repositories.html")
+    db.execute("SELECT name, github FROM users")
+    rows = db.fetchall()
+    return render_template("repositories.html", info=rows)
+
+@app.route('/test')
+def test():
+    return render_template("layout.html")
 
 if __name__ == '__main__':
     app.run()
